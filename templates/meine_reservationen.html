@@ -1,0 +1,82 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Meine Reservationen</h2>
+
+<p>Hier findest du deine reservierten und ausgeliehenen Werkzeuge.</p>
+
+<div class="grid">
+
+    {% for r in reservationen %}
+
+        <article class="karte">
+
+            <h3>{{ r.werkzeug.name }}</h3>
+
+            <p>
+                <strong>Abholung:</strong>
+                {{ r.start|date:"d.m.Y H:i" }}
+            </p>
+
+            <p>
+                <strong>Rückgabe:</strong>
+                {{ r.ende|date:"d.m.Y H:i" }}
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+                {{ r.get_status_display }}
+            </p>
+
+            {% if r.werkzeug.elektrowerkzeug %}
+
+                <p>
+                    <strong>Kaution:</strong>
+                    {{ r.kaution_bezahlt|yesno:"Bezahlt,Offen" }}
+                </p>
+
+            {% endif %}
+
+            {% if r.status == "reserviert" %}
+
+                <form method="post"
+                      action="{% url 'stornieren' r.id %}">
+
+                    {% csrf_token %}
+
+                    <button class="danger" type="submit"
+                            onclick="return confirm('Reservation wirklich stornieren?')">
+                        Stornieren
+                    </button>
+
+                </form>
+
+            {% endif %}
+
+        </article>
+
+    {% empty %}
+
+        <div class="karte">
+
+            <h3>Keine Reservationen vorhanden</h3>
+
+            <p>Du hast bisher noch kein Werkzeug reserviert.</p>
+
+            <a class="button" href="{% url 'katalog' %}">
+                Werkzeug reservieren
+            </a>
+
+        </div>
+
+    {% endfor %}
+
+</div>
+
+<a href="{% url 'katalog' %}">
+    Zurück zum Werkzeugkatalog
+</a>
+
+{% endblock %}
