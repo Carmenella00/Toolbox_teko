@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Depotverwaltung</h2>
+
+<p>Dieser Bereich ist nur für Freiwillige zugänglich.</p>
+
+<h3>Aktive Reservationen und Ausleihen</h3>
+
+<div class="grid">
+
+{% for r in reservationen %}
+
+<article class="karte">
+
+    <h3>{{ r.werkzeug.name }}</h3>
+
+    <p>Mitglied: {{ r.mitglied.username }}</p>
+
+    <p>Telefon: {{ r.mitglied.profil.telefon }}</p>
+
+    <p>Abholung: {{ r.start|date:"d.m.Y H:i" }}</p>
+
+    <p>Rückgabe: {{ r.ende|date:"d.m.Y H:i" }}</p>
+
+    <p>Status: {{ r.get_status_display }}</p>
+
+    {% if r.werkzeug.elektrowerkzeug %}
+
+        <p>Einführung:
+            {{ r.mitglied.profil.einfuehrung|yesno:"Ja,Nein" }}
+        </p>
+
+        <p>Kaution:
+            {{ r.kaution_bezahlt|yesno:"Bezahlt,Offen" }}
+        </p>
+
+        {% if r.status == "reserviert" and not r.kaution_bezahlt %}
+
+        <form method="post"
+              action="{% url 'kaution' r.id %}">
+
+            {% csrf_token %}
+
+            <button type="submit">
+                CHF 50 erhalten
+            </button>
+
+        </form>
+
+        {% endif %}
+
+    {% endif %}
+
+    {% if r.status == "reserviert" %}
+
+    <form method="post"
+          action="{% url 'ausgeben' r.id %}">
+
+        {% csrf_token %}
+
+        <button type="submit">Werkzeug ausgeben</button>
+
+    </form>
+
+    {% elif r.status == "ausgeliehen" %}
+
+    <form method="post"
+          action="{% url 'ruecknahme' r.id %}">
+
+        {% csrf_token %}
+
+        <label for="zustand-{{ r.id }}">Werkzeugzustand</label>
+
+        <select name="zustand"
+                id="zustand-{{ r.id }}" required>
+
+            <option value="ordnung">In Ordnung</option>
+
+            <option value="beschaedigt">Beschädigt</option>
+
+            <option value="unvollstaendig">Unvollständig</option>
+
+        </select>
+
+        <button type="submit">Rücknahme bestätigen</button>
+
+    </form>
+
+    {% endif %}
+
+</article>
+
+{% empty %}
+
+<p>Keine aktiven Reservationen vorhanden.</p>
+
+{% endfor %}
+
+</div>
+
+<h3>Einführungen verwalten</h3>
+
+{% for profil in profile %}
+
+<div class="karte">
+
+    <p>{{ profil.user.username }}</p>
+
+    <p>Telefon: {{ profil.telefon }}</p>
+
+    {% if profil.einfuehrung %}
+
+        <span class="status gruen">
+            Einführung abgeschlossen
+        </span>
+
+    {% else %}
+
+        <form method="post"
+              action="{% url 'einfuehrung' profil.user.id %}">
+
+            {% csrf_token %}
+
+            <button type="submit">
+                Einführung bestätigen
+            </button>
+
+        </form>
+
+    {% endif %}
+
+</div>
+
+{% endfor %}
+
+<h3>Gesperrte Werkzeuge</h3>
+
+{% for werkzeug in gesperrte_werkzeuge %}
+
+<div class="karte">
+
+    <h4>{{ werkzeug.name }}</h4>
+
+    <form method="post"
+          action="{% url 'freigeben' werkzeug.id %}">
+
+        {% csrf_token %}
+
+        <button type="submit">
+            Reparatur bestätigen und freigeben
+        </button>
+
+    </form>
+
+</div>
+
+{% empty %}
+
+<p>Keine gesperrten Werkzeuge.</p>
+
+{% endfor %}
+
+{% endblock %}

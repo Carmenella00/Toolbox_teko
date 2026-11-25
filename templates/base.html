@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>ToolBox – Werkzeugausleihe</title>
+
+    <link rel="stylesheet"
+          href="{% static 'style.css' %}">
+</head>
+<body>
+
+<header>
+    <h1>⚒ ToolBox</h1>
+    <p>Quartierverein Lindenhof</p>
+</header>
+
+{% if user.is_authenticated %}
+<nav>
+    <a href="{% url 'katalog' %}">
+        Werkzeugkatalog
+    </a>
+
+    <a href="{% url 'meine_reservationen' %}">
+        Meine Reservationen
+    </a>
+
+    <span>{{ user.username }}</span>
+
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Abmelden</button>
+    </form>
+</nav>
+{% endif %}
+
+<main>
+
+    {% for message in messages %}
+        <div class="meldung {{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% block content %}
+    {% endblock %}
+
+</main>
+
+<footer>
+    <p>ToolBox – Quartierverein Lindenhof</p>
+    <p>Depot: Samstag, 09:00–12:00 Uhr</p>
+</footer>
+
+</body>
+</html>
