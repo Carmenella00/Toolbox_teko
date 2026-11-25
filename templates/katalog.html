@@ -1,0 +1,87 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Werkzeugkatalog</h2>
+
+<p>Finde und reserviere dein nächstes Werkzeug.</p>
+
+{% if freiwillig %}
+    <a class="button" href="{% url 'depot' %}">
+        Depot verwalten
+    </a>
+{% endif %}
+
+<section class="karte">
+    <h3>Verfügbarkeit prüfen</h3>
+
+    <form method="get">
+        {{ form.as_p }}
+        <button type="submit">Zeitraum prüfen</button>
+    </form>
+
+    <p>Ohne Zeitraum wird der aktuelle Status angezeigt.</p>
+</section>
+
+<div class="grid">
+
+    {% for werkzeug in werkzeuge %}
+
+    <article class="karte">
+
+        <div class="werkzeug-icon">
+            {% if werkzeug.elektrowerkzeug %}
+                ⚙️
+            {% else %}
+                🛠️
+            {% endif %}
+        </div>
+
+        <h3>{{ werkzeug.name }}</h3>
+
+        <p>{{ werkzeug.beschreibung }}</p>
+
+        {% if werkzeug.gesperrt %}
+
+            <span class="status rot">
+                Gesperrt
+            </span>
+
+        {% elif werkzeug.verfuegbar %}
+
+            <span class="status gruen">
+                Verfügbar
+            </span>
+
+        {% else %}
+
+            <span class="status orange">
+                Belegt
+            </span>
+
+        {% endif %}
+
+        {% if werkzeug.elektrowerkzeug %}
+            <p>Einführung erforderlich</p>
+            <p>Kaution: CHF 50</p>
+        {% endif %}
+
+        {% if mitglied and not werkzeug.gesperrt %}
+            <a class="button"
+               href="{% url 'reservieren' werkzeug.id %}">
+                Reservieren
+            </a>
+        {% endif %}
+
+    </article>
+
+    {% empty %}
+
+        <p>Keine Werkzeuge vorhanden.</p>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}
