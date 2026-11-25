@@ -73,3 +73,28 @@ Quellcode generiert.
 Die tatsächliche Übernahme der Dateien sowie die
 funktionalen und automatisierten Tests sind noch
 nicht bestätigt.
+
+
+## Weitere Prompts während Teil B und C
+
+| Nr. | Anf-IDs | Prompt | Ergebnis der KI | Entscheid | Begründung |
+|---|---|---|---|---|---|
+| P06 | F01 | Kann mich anmelden, aber dann ist der Screen nur noch weiss. | Überprüfung der HTML-Templates vorgeschlagen. | Übernommen | Das Werkzeugkatalog-Template war leer. |
+| P07 | F01 | Katalog ist leer. | Vollständiges katalog.html bereitgestellt. | Übernommen | Werkzeugkatalog konnte ergänzt werden. |
+| P08 | F08, F12 | Meine Reservation ist auch noch leer. | Vollständiges meine_reservationen.html bereitgestellt. | Übernommen | Die fehlende Reservationsübersicht wurde ergänzt. |
+| P09 | F02–F18 | Jetzt dokumentiere die restlichen Aufgaben. | Testprotokoll, automatisierte Tests und PDCA-Vorschlag erstellt. | Zur Übernahme vorgesehen | Anforderungen sollen systematisch überprüft werden. |
+
+## Weiteres korrigiertes KI-Ergebnis
+
+Die ursprüngliche Rücknahmefunktion erlaubte
+ausserordentliche Rückgaben ausserhalb der
+Depotöffnungszeiten.
+
+Bei der Codeüberprüfung wurde erkannt, dass diese
+Umsetzung von F05 beziehungsweise Z3 abweicht.
+
+Als Korrektur wurde vorgeschlagen, die Verarbeitung
+ausserhalb der Öffnungszeiten serverseitig abzubrechen.
+
+Die tatsächliche Übernahme und Testausführung
+werden im PDCA-Protokoll dokumentiert.
